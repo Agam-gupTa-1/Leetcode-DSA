@@ -1,0 +1,63 @@
+//  1383. Maximum Performance of a Team (imp)
+
+Each engineer is characterized by his/her speed and efficiency.
+
+
+Step1. We sort engineers by their efficiency in decreasing order. O(NlogN)
+
+
+Step2. With the sorted array, for index i = 0, 1, ..., k-1, we push the speed into 
+the min_heap and calculate the performance with first (i+1) engineers. We only need to record the max performance.
+
+
+Step3. With the sorted array, for index i = k, k+1, ..., n-1, if the speed of the current engineer is greater than
+the top of the min_heap, we pop and push with it. In this way,
+we can calculate the max performance with respect to the i-th largest efficiency since we have the engineers 
+with the k largest speeds in the min_heap. O(NlogK)
+
+
+// code 
+#define M 1000000007
+class Solution {
+public:
+    int maxPerformance(int n, vector<int>& speed, vector<int>& efficiency, int k) {
+        vector<vector<int>> engineers;
+        
+        vector<int> temp(2,0);
+        for(int i = 0; i < n; i++)
+        {
+            temp[0] = efficiency[i];
+            temp[1] = speed[i];
+            engineers.push_back(temp);
+        }
+        // sorting in decreasing order  of efficiency
+        sort(engineers.begin(), engineers.end(), cmp);
+        priority_queue<int, vector<int>, greater<int>> minheap;
+        // processing first k engineers
+        long speedSum = 0, minEff = 0, maxPer = 0;
+        for(int i = 0; i < k; i++)
+        {
+            speedSum += engineers[i][1];
+            minEff = engineers[i][0];
+            maxPer = max(maxPer, speedSum*minEff);
+            minheap.push(engineers[i][1]);
+        }
+        // atmost k engineers are processed now we remove the minspeed engineer and adding engineer with more speed
+        for(int i = k; i < n; i++)
+        {
+            if(engineers[i][1] > minheap.top())
+            {
+                speedSum += (engineers[i][1]-minheap.top());
+                minheap.pop();
+                minEff = engineers[i][0];
+                maxPer = max(maxPer, speedSum*minEff);
+                minheap.push(engineers[i][1]);
+            }
+        }
+        return (int)(maxPer%M);
+    }
+    bool static cmp(vector<int> &a, vector<int> &b)
+    {
+        return a[0] > b[0];
+    }
+};
