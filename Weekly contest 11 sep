@@ -1,0 +1,49 @@
+2) // Optimal Partition of string
+
+// Intution  --> keep the track of characters and whenever we found repeating char, we partition the string and clear the ds which stores next unique substring 
+
+// Code
+class Solution {
+public:
+    int partitionString(string s) {
+        unordered_set<char> st;
+        int n = s.size();
+        int partition = 1;
+        
+        for(int i = 0; i <  n; i++)
+        {
+            if(st.find(s[i]) != st.end())
+            {
+                st.clear();
+                partition++;
+            }
+            st.emplace(s[i]);
+        }
+        return partition;
+    }
+};
+
+3) //  2406. Divide Intervals Into Minimum Number of Groups
+
+// Approach --> 1 sort the intervals can think like [arrival time of train, departure time of train]
+2 maintain min heap of departure time so that we can get the train that will leave the station first among all
+if(the arrival time of incoming train is greater than departure time of other train, then the former train can take platform of former means no extra platform is needed no extra group is needed 
+
+at the end size of heap will tell the min platform needed to accomodate all trains or min group needed to group all intervals
+
+
+// code
+
+class Solution {
+public:
+    int minGroups(vector<vector<int>>& intervals) {
+        sort(begin(intervals), end(intervals));
+        priority_queue<int, vector<int>, greater<int>> pq;
+        for (const auto &i : intervals) {
+            if (!pq.empty() && pq.top() < i[0])
+                pq.pop();
+            pq.push(i[1]);
+        }
+        return pq.size();
+    }
+};
