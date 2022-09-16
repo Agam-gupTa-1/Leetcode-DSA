@@ -25,6 +25,8 @@ class Solution {
 public:
     int maximumScore(vector<int>& nums, vector<int>& multipliers) {
         int m = multipliers.size(), n = nums.size();
+        
+        
         vector<vector<vector<int>>> dp(m, vector<vector<int>> (m, vector<int>(n, -1)));
         return solve(0, nums, multipliers, m, 0, n-1, dp);
     }
